@@ -15,21 +15,53 @@ struct MinHeap {
     MinHeap() { size = 0; }
 
     void push(int idx, int weightArr[]) {
-        // TODO: insert index at end of heap, restore order using upheap()
+        if (size >= 64) {
+            cout << "Heap Overflow" << endl;
+            return;
+        }
+        data[size] = idx;
+        upheap(size, weightArr);
+        ++size;
     }
 
     int pop(int weightArr[]) {
-        // TODO: remove and return smallest index
-        // Replace root with last element, then call downheap()
-        return -1; // placeholder
+        if (size == 0) {
+            cout << "Heap Underflow" << endl;
+            return -1;
+        }
+        int minIdx = data[0];
+        data[0] = data[size-1];
+        --size;
+        if (size > 0) {downheap(0,weightArr);}
+        return minIdx;
     }
 
     void upheap(int pos, int weightArr[]) {
-        // TODO: swap child upward while smaller than parent
+        while (pos > 0) {
+            int parent = (pos - 1) / 2;
+            if (weightArr[parent] > weightArr[pos]) {
+                swap(pos, parent);
+                pos = parent;
+            }else {break;}
+        }
     }
 
     void downheap(int pos, int weightArr[]) {
-        // TODO: swap parent downward while larger than any child
+        while (true) {
+            int left = 2 * pos + 1;
+            int right = 2 * pos + 2;
+            int small = pos;
+            if (left < size && weightArr[left] > weightArr[small]) {
+                small = left;
+            }
+            if (right < size && weightArr[right] > weightArr[small]) {
+                small = right;
+            }
+            if (small != pos) {
+                swap(pos, small);
+                pos = small;
+            }else {break;}
+        }
     }
 };
 
