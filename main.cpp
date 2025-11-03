@@ -76,6 +76,7 @@ int createLeafNodes(int freq[]) {
     int nextFree = 0;
     for (int i = 0; i < 26; ++i) {
         if (freq[i] > 0) {
+            // Leaf node stores the character its weight and no children
             charArr[nextFree] = 'a' + i;
             weightArr[nextFree] = freq[i];
             leftArr[nextFree] = -1;
@@ -89,15 +90,7 @@ int createLeafNodes(int freq[]) {
 
 // Step 3: Build the encoding tree using heap operations
 int buildEncodingTree(int nextFree) {
-    // TODO:
-    // 1. Create a MinHeap object.
-    // 2. Push all leaf node indices into the heap.
-    // 3. While the heap size is greater than 1:
-    //    - Pop two smallest nodes
-    //    - Create a new parent node with combined weight
-    //    - Set left/right pointers
-    //    - Push new parent index back into the heap
-    // 4. Return the index of the last remaining node (root)
+    //Creates a heap and push indices of all current leaves
     MinHeap heap;
     for (int i = 0; i < nextFree; ++i) {
         heap.push(i, weightArr);
@@ -106,6 +99,7 @@ int buildEncodingTree(int nextFree) {
         int only = heap.pop(weightArr);
         heap.push(only, weightArr);
     }
+    //if more than one node remains, merge the two smallest subtrees.
     while (heap.size > 1) {
         int a = heap.pop(weightArr); // smallest
         int b = heap.pop(weightArr); // next smallest
@@ -115,7 +109,7 @@ int buildEncodingTree(int nextFree) {
             exit(1);
         }
 
-        // Create new internal parent node
+        // Creates a new internal parent node
         int parent = nextFree++;
         weightArr[parent] = weightArr[a] + weightArr[b];
         leftArr[parent]   = a;
@@ -129,12 +123,31 @@ int buildEncodingTree(int nextFree) {
 }
 
 // Step 4: Use an STL stack to generate codes
+//Left edges append 0 and right edges append 1.
 void generateCodes(int root, string codes[]) {
-    // TODO:
-    // Use stack<pair<int, string>> to simulate DFS traversal.
-    // Left edge adds '0', right edge adds '1'.
-    // Record code when a leaf node is reached.
-    if (leftArr[root] != -1 && rightArr[root] != -1) {}
+    stack<pair<int, string>> st;
+    st.push({root, ""});
+
+    while (!st.empty()) {
+        auto [node, path] = st.top();
+        st.pop();
+
+        int L = leftArr[node];
+        int R = rightArr[node];
+
+        bool isLeaf = (L == -1 && R == -1);
+        if (isLeaf) {
+            char ch = charArr[node];
+            if (ch >= 'a' && ch <= 'z') {
+                // If path is empty fallback to 0
+                codes[ch - 'a'] = path.empty() ? "0" : path;
+            }
+        } else {
+            // Push right first so left is processed first
+            if (R != -1) st.push({R, path + "1"});
+            if (L != -1) st.push({L, path + "0"});
+        }
+    }
 }
 
 // Step 5: Print table and encoded message

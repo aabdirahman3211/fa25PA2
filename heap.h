@@ -14,6 +14,11 @@ struct MinHeap {
 
     MinHeap() { size = 0; }
 
+    static bool less(int a, int b, int weightArr[]) {
+        if (weightArr[a] != weightArr[b]) return weightArr[a] < weightArr[b];
+        return a < b;
+    }
+ // insert a new index into the heap at the end
     void push(int idx, int weightArr[]) {
         if (size >= 64) {
             cout << "Heap Overflow" << endl;
@@ -23,7 +28,7 @@ struct MinHeap {
         upheap(size, weightArr);
         ++size;
     }
-
+// remove and return the smallest index
     int pop(int weightArr[]) {
         if (size == 0) {
             cout << "Heap Underflow" << endl;
@@ -35,32 +40,33 @@ struct MinHeap {
         if (size > 0) {downheap(0,weightArr);}
         return minIdx;
     }
-
+    //Move an element upward until the heap property is satisfied.
     void upheap(int pos, int weightArr[]) {
         while (pos > 0) {
             int parent = (pos - 1) / 2;
-            if (weightArr[parent] > weightArr[pos]) {
-                swap(pos, parent);
+            if (less(data[pos], data[parent], weightArr)) {
+                swap(data[pos], data[parent]);
                 pos = parent;
             }else {break;}
         }
     }
-
+    // move an element downward until it is smaller than its children.
     void downheap(int pos, int weightArr[]) {
         while (true) {
             int left = 2 * pos + 1;
             int right = 2 * pos + 2;
             int small = pos;
-            if (left < size && weightArr[left] > weightArr[small]) {
+            if (left < size && less(data[left], data[small], weightArr)) {
                 small = left;
             }
-            if (right < size && weightArr[right] > weightArr[small]) {
+            if (right < size && less(data[right], data[small], weightArr)) {
                 small = right;
             }
+
             if (small != pos) {
-                swap(pos, small);
+                swap(data[pos], data[small]);
                 pos = small;
-            }else {break;}
+            } else {break;}
         }
     }
 };
