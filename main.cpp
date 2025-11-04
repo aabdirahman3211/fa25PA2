@@ -96,8 +96,7 @@ int buildEncodingTree(int nextFree) {
         heap.push(i, weightArr);
     }
     if (heap.size == 1) {
-        int only = heap.pop(weightArr);
-        heap.push(only, weightArr);
+        return heap.pop(weightArr);
     }
     //if more than one node remains, merge the two smallest subtrees.
     while (heap.size > 1) {

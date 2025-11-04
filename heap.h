@@ -6,14 +6,13 @@
 #define HEAP_H
 
 #include <iostream>
-using namespace std;
 
 struct MinHeap {
     int data[64];
     int size;
 
     MinHeap() { size = 0; }
-
+    //Finds what node is smaller
     static bool less(int a, int b, int weightArr[]) {
         if (weightArr[a] != weightArr[b]) return weightArr[a] < weightArr[b];
         return a < b;
@@ -21,7 +20,7 @@ struct MinHeap {
  // insert a new index into the heap at the end
     void push(int idx, int weightArr[]) {
         if (size >= 64) {
-            cout << "Heap Overflow" << endl;
+            std::cout << "Heap Overflow" << std::endl;
             return;
         }
         data[size] = idx;
@@ -31,7 +30,7 @@ struct MinHeap {
 // remove and return the smallest index
     int pop(int weightArr[]) {
         if (size == 0) {
-            cout << "Heap Underflow" << endl;
+            std::cout << "Heap Underflow" << std::endl;
             return -1;
         }
         int minIdx = data[0];
@@ -45,7 +44,7 @@ struct MinHeap {
         while (pos > 0) {
             int parent = (pos - 1) / 2;
             if (less(data[pos], data[parent], weightArr)) {
-                swap(data[pos], data[parent]);
+                std::swap(data[pos], data[parent]);
                 pos = parent;
             }else {break;}
         }
@@ -64,7 +63,7 @@ struct MinHeap {
             }
 
             if (small != pos) {
-                swap(data[pos], data[small]);
+                std::swap(data[pos], data[small]);
                 pos = small;
             } else {break;}
         }
